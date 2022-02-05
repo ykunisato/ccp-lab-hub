@@ -1,6 +1,7 @@
 FROM jupyterhub/jupyterhub
 LABEL maintainer="Yoshihiko Kunisato <kunisato@psy.senshu-u.ac.jp>"
 
+RUN pip3 install wget
 RUN pip3 install notebook
 RUN pip3 install jupyterlab
 RUN pip3 install scipy
