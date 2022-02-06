@@ -2,7 +2,8 @@ FROM jupyterhub/jupyterhub
 LABEL maintainer="Yoshihiko Kunisato <kunisato@psy.senshu-u.ac.jp>"
 
 RUN apt -y update && apt -y upgrade
-RUN apt install -y wget
+RUN apt install -y wget \
+    git
 
 RUN pip3 install notebook
 RUN pip3 install jupyterlab
@@ -20,8 +21,16 @@ RUN tar -xvf julia-1.7.1-linux-x86_64.tar -C "/opt/"
 RUN ln -fs /opt/julia-*/bin/julia /usr/local/bin/julia
 RUN rm julia-1.7.1-linux-x86_64.tar
 
+# I use the fix-permissions script form 
+# https://github.com/jupyter/docker-stacks/blob/master/base-notebook/fix-permissions
+COPY fix-permissions /usr/local/bin/fix-permissions
+RUN chmod a+rx /usr/local/bin/fix-permissions
+
 # Install Julia packages
 RUN julia -e 'import Pkg; Pkg.update()' && \
     julia -e 'import Pkg; Pkg.add("HDF5")' && \
-    julia -e 'using Pkg; pkg"add IJulia"; pkg"precompile"'
-
+    julia -e 'using Pkg; pkg"add IJulia"; pkg"precompile"' && \
+    mv "/root/.local/share/jupyter/kernels/julia-1.7" "/usr/local/share/jupyter/kernels/" && \
+    chmod -R go+rx "/usr/local/share/jupyter" && \
+    rm -rf "/root/.local" && \
+    fix-permissions "/opt/julia" "/usr/local/share/jupyter"
