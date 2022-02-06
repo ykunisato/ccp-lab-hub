@@ -13,39 +13,15 @@ RUN pip3 install sympy
 
 
 # Install Julia
-# I use the code used in the repository below.
-# https://github.com/jupyter/docker-stacks/blob/master/datascience-notebook/Dockerfile
-ENV JULIA_DEPOT_PATH=/opt/julia \
-    JULIA_PKGDIR=/opt/julia \
-    JULIA_VERSION="1.7.1"
+RUN cd /opt/
+RUN wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.1-linux-x86_64.tar.gz
+RUN gunzip julia-1.7.1-linux-x86_64.tar.gz
+RUN tar -xvf julia-1.7.1-linux-x86_64.tar -C "/opt/"
+RUN ln -fs /opt/julia-*/bin/julia /usr/local/bin/julia
+RUN rm julia-1.7.1-linux-x86_64.tar
 
-RUN set -x && \
-    julia_arch=$(uname -m) && \
-    julia_short_arch="${julia_arch}" && \
-    if [ "${julia_short_arch}" == "x86_64" ]; then \
-      julia_short_arch="x64"; \
-    fi; \
-    julia_installer="julia-${JULIA_VERSION}-linux-${julia_arch}.tar.gz" && \
-    julia_major_minor=$(echo "${JULIA_VERSION}" | cut -d. -f 1,2) && \
-    mkdir "/opt/julia-${JULIA_VERSION}" && \
-    wget -q "https://julialang-s3.julialang.org/bin/linux/${julia_short_arch}/${julia_major_minor}/${julia_installer}" && \
-    tar xzf "${julia_installer}" -C "/opt/julia-${JULIA_VERSION}" --strip-components=1 && \
-    rm "${julia_installer}" && \
-    ln -fs /opt/julia-*/bin/julia /usr/local/bin/julia
-
-RUN mkdir /etc/julia && \
-    echo "push!(Libdl.DL_LOAD_PATH, \"${CONDA_DIR}/lib\")" >> /etc/julia/juliarc.jl && \
-    # Create JULIA_PKGDIR \
-    mkdir "${JULIA_PKGDIR}" && \
-    chown "${NB_USER}" "${JULIA_PKGDIR}" && \
-    fix-permissions "${JULIA_PKGDIR}"
-
+# Install Julia packages
 RUN julia -e 'import Pkg; Pkg.update()' && \
     julia -e 'import Pkg; Pkg.add("HDF5")' && \
-    julia -e 'using Pkg; pkg"add IJulia"; pkg"precompile"' && \
-    # move kernelspec out of home \
-    mv "${HOME}/.local/share/jupyter/kernels/julia"* "${CONDA_DIR}/share/jupyter/kernels/" && \
-    chmod -R go+rx "${CONDA_DIR}/share/jupyter" && \
-    rm -rf "${HOME}/.local" && \
-    fix-permissions "${JULIA_PKGDIR}" "${CONDA_DIR}/share/jupyter"
+    julia -e 'using Pkg; pkg"add IJulia"; pkg"precompile"'
 
