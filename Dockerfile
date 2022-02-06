@@ -85,5 +85,4 @@ RUN julia -e 'using Pkg; Pkg.add("ForneyLab")'
 # notebook extentions
 RUN pip3 install jupyterlab-git
 RUN pip3 install jupyter_contrib_nbextensions
-RUN jupyter labextension install @lckr/jupyterlab_variableinspector@3.0.7
-RUN jupyter nbextension enable @lckr/jupyterlab_variableinspector/main
+RUN pip3 install lckr-jupyterlab-variableinspector
