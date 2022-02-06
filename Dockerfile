@@ -6,26 +6,29 @@ RUN apt install -y wget \
     git
 
 # Intall Python packages
-RUN pip3 install notebook
-RUN pip3 install jupyterlab
-RUN pip3 install scipy
-RUN pip3 install seaborn
-RUN pip3 install scikit-learn
-RUN pip3 install sympy
-RUN pip3 install mne
-RUN pip3 install axelrod
-RUN pip3 install deap
-RUN pip3 install japanize-matplotlib
-RUN pip3 install mecab-python3
-RUN pip3 install unidic-lite
-RUN pip3 install --upgrade mplfinance
-RUN pip3 install networkx
-RUN pip3 install PuLP
-RUN pip3 install pymc3
-RUN pip3 install simpy
-RUN pip3 install psychrnn
-RUN pip3 install pyddm
-RUN pip3 install inferactively-pymdp
+RUN pip3 install notebook \
+    jupyterlab \
+    scipy \
+    seaborn \
+    scikit-learn \
+    sympy \
+    mne \
+    axelrod \
+    deap \
+    japanize-matplotlib \
+    mecab-python3 \
+    unidic-lite \
+    --upgrade mplfinance \
+    networkx \
+    PuLP \
+    pymc3 \
+    simpy \
+    psychrnn \
+    pyddm \
+    inferactively-pymdp \
+    jupyterlab-git \
+    jupyter_contrib_nbextensions \
+    lckr-jupyterlab-variableinspector
 
 # Install Julia
 RUN cd /opt/
@@ -45,44 +48,39 @@ RUN julia -e 'import Pkg; Pkg.update()' && \
 
 ## Install julia Pkgs
 # Stats
-RUN julia -e 'using Pkg; Pkg.add("CPUTime")'
-RUN julia -e 'using Pkg; Pkg.add("Distributions")'
-RUN julia -e 'using Pkg; Pkg.add("Gadfly")'
-RUN julia -e 'using Pkg; Pkg.add("GLM")'
-RUN julia -e 'using Pkg; Pkg.add("Optim")'
-RUN julia -e 'using Pkg; Pkg.add("Plots")'
+RUN julia -e 'using Pkg; Pkg.add("CPUTime")' && \
+    julia -e 'using Pkg; Pkg.add("Distributions")' && \
+    julia -e 'using Pkg; Pkg.add("Gadfly")' && \
+    julia -e 'using Pkg; Pkg.add("GLM")' && \
+    julia -e 'using Pkg; Pkg.add("Optim")' && \
+    julia -e 'using Pkg; Pkg.add("Plots")' && \
+    julia -e 'using Pkg; Pkg.add("Query")' && \
+    julia -e 'using Pkg; Pkg.add("RDatasets")' && \
+    julia -e 'using Pkg; Pkg.add("SpecialFunctions")' && \
+    julia -e 'using Pkg; Pkg.add("StatisticalRethinking")' && \
+    julia -e 'using Pkg; Pkg.add("StatsBase")' && \
+    julia -e 'using Pkg; Pkg.add("StatsFuns")' && \
+    julia -e 'using Pkg; Pkg.add("StatsPlots")' && \
 # RUN julia -e 'using Pkg; Pkg.add("PyCall")'
 # RUN julia -e 'using Pkg; Pkg.add("PyPlot")'
-RUN julia -e 'using Pkg; Pkg.add("Query")'
-RUN julia -e 'using Pkg; Pkg.add("RDatasets")'
-RUN julia -e 'using Pkg; Pkg.add("SpecialFunctions")'
-RUN julia -e 'using Pkg; Pkg.add("StatisticalRethinking")'
-RUN julia -e 'using Pkg; Pkg.add("StatsBase")'
-RUN julia -e 'using Pkg; Pkg.add("StatsFuns")'
-RUN julia -e 'using Pkg; Pkg.add("StatsPlots")'
 # stan and turing
-RUN julia -e 'using Pkg; Pkg.add("AdvancedHMC")'
-RUN julia -e 'using Pkg; Pkg.add("BAT")'
-RUN julia -e 'using Pkg; Pkg.add("Bijectors")'
-RUN julia -e 'using Pkg; Pkg.add("CmdStan")'
-RUN julia -e 'using Pkg; Pkg.add("DiffEqBayes")'
-RUN julia -e 'using Pkg; Pkg.add("DistributionsAD")'
-RUN julia -e 'using Pkg; Pkg.add("ForwardDiff")'
-RUN julia -e 'using Pkg; Pkg.add("MCMCChains")'
-RUN julia -e 'using Pkg; Pkg.add("MeasureTheory")'
-RUN julia -e 'using Pkg; Pkg.add("ParameterizedFunctions")'
-RUN julia -e 'using Pkg; Pkg.add("Soss")'
-RUN julia -e 'using Pkg; Pkg.add("Turing")'
+    julia -e 'using Pkg; Pkg.add("AdvancedHMC")' && \
+    julia -e 'using Pkg; Pkg.add("BAT")' && \
+    julia -e 'using Pkg; Pkg.add("Bijectors")' && \
+    julia -e 'using Pkg; Pkg.add("CmdStan")' && \
+    julia -e 'using Pkg; Pkg.add("DiffEqBayes")' && \
+    julia -e 'using Pkg; Pkg.add("DistributionsAD")' && \
+    julia -e 'using Pkg; Pkg.add("ForwardDiff")' && \
+    julia -e 'using Pkg; Pkg.add("MCMCChains")' && \
+    julia -e 'using Pkg; Pkg.add("MeasureTheory")' && \
+    julia -e 'using Pkg; Pkg.add("ParameterizedFunctions")' && \
+    julia -e 'using Pkg; Pkg.add("Soss")' && \
+    julia -e 'using Pkg; Pkg.add("Turing")' && \
 ## ODE
+    julia -e 'using Pkg; Pkg.add("LinearAlgebra")' && \
+    julia -e 'using Pkg; Pkg.add("DifferentialEquations")'  && \
+    julia -e 'using Pkg; Pkg.add("Roots")' && \
 # RUN julia -e 'using Pkg; Pkg.add("CalculusWithJulia")'
-RUN julia -e 'using Pkg; Pkg.add("LinearAlgebra")'
-RUN julia -e 'using Pkg; Pkg.add("DifferentialEquations")' 
-RUN julia -e 'using Pkg; Pkg.add("Roots")' 
 # RUN julia -e 'using Pkg; Pkg.add("SymPy")' 
 ## Active Inference
-RUN julia -e 'using Pkg; Pkg.add("ForneyLab")'
-
-# notebook extentions
-RUN pip3 install jupyterlab-git
-RUN pip3 install jupyter_contrib_nbextensions
-RUN pip3 install lckr-jupyterlab-variableinspector
+    julia -e 'using Pkg; Pkg.add("ForneyLab")'
