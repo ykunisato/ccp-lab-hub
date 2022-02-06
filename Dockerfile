@@ -24,7 +24,7 @@ RUN pip3 install PuLP
 RUN pip3 install pymc3
 RUN pip3 install simpy
 RUN pip3 install psychrnn
-RUN pip install pyddm
+RUN pip3 install pyddm
 RUN pip3 install inferactively-pymdp
 
 # Install Julia
