@@ -8,6 +8,9 @@ RUN apt install -y wget \
 # Intall Python packages
 RUN pip3 install notebook \
     jupyterlab \
+    jupyterlab-git \
+    jupyter_contrib_nbextensions \
+    lckr-jupyterlab-variableinspector \
     scipy \
     seaborn \
     scikit-learn \
@@ -18,37 +21,29 @@ RUN pip3 install notebook \
     japanize-matplotlib \
     mecab-python3 \
     unidic-lite \
-    --upgrade mplfinance \
     networkx \
     PuLP \
     pymc3 \
     simpy \
     psychrnn \
     pyddm \
-    inferactively-pymdp \
-    jupyterlab-git \
-    jupyter_contrib_nbextensions \
-    lckr-jupyterlab-variableinspector
+    inferactively-pymdp
 
 # Install Julia
 RUN cd /opt/
 RUN wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.1-linux-x86_64.tar.gz
 RUN gunzip julia-1.7.1-linux-x86_64.tar.gz
 RUN tar -xvf julia-1.7.1-linux-x86_64.tar -C "/opt/"
-RUN ln -fs /opt/julia-*/bin/julia /usr/local/bin/julia
 RUN rm julia-1.7.1-linux-x86_64.tar
+RUN ln -fs /opt/julia-*/bin/julia /usr/local/bin/julia
+
 
 # Install Julia packages
 RUN julia -e 'import Pkg; Pkg.update()' && \
     julia -e 'import Pkg; Pkg.add("HDF5")' && \
-    julia -e 'using Pkg; pkg"add IJulia"; pkg"precompile"' && \
-    mv "/root/.local/share/jupyter/kernels/julia-1.7" "/usr/local/share/jupyter/kernels/" && \
-    chmod -R go+rx "/usr/local/share/jupyter" && \
-    rm -rf "/root/.local"
-
-## Install julia Pkgs
+    julia -e 'using Pkg; Pkg.add("IJulia")' && \
 # Stats
-RUN julia -e 'using Pkg; Pkg.add("CPUTime")' && \
+    julia -e 'using Pkg; Pkg.add("CPUTime")' && \
     julia -e 'using Pkg; Pkg.add("Distributions")' && \
     julia -e 'using Pkg; Pkg.add("Gadfly")' && \
     julia -e 'using Pkg; Pkg.add("GLM")' && \
@@ -84,3 +79,9 @@ RUN julia -e 'using Pkg; Pkg.add("CPUTime")' && \
 # RUN julia -e 'using Pkg; Pkg.add("SymPy")' 
 ## Active Inference
     julia -e 'using Pkg; Pkg.add("ForneyLab")'
+# Pre compile
+RUN julia -e 'using Pkg; Pkg.precompile()' && \
+    julia -e 'using Pkg; Pkg.build("IJulia")' && \
+    mv "/root/.local/share/jupyter/kernels/julia-1.7" "/usr/local/share/jupyter/kernels/" && \
+    chmod -R go+rx "/usr/local/share/jupyter" && \
+    rm -rf "/root/.local"
