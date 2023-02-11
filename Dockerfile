@@ -28,10 +28,11 @@ RUN pip3 install notebook \
     psychrnn \
     pyddm \
     inferactively-pymdp\
-    bokeh
+    bokeh \
+    sudachipy
 
 # Install Julia
-ARG JULIA_VERSION="1.8.0"
+ARG JULIA_VERSION="1.8.5"
 RUN JULIA_MAJOR=`echo $JULIA_VERSION | sed -E  "s/\.[0-9]+$//g"` && \
     wget https://julialang-s3.julialang.org/bin/linux/x64/$JULIA_MAJOR/julia-$JULIA_VERSION-linux-x86_64.tar.gz && \
     tar -xvzf julia-$JULIA_VERSION-linux-x86_64.tar.gz && \
